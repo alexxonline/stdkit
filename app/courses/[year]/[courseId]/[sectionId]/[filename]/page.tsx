@@ -88,7 +88,7 @@ export default async function ContentViewPage({
         </p>
       ) : (
         <article
-          className="prose prose-zinc max-w-none dark:prose-invert"
+          className="markdown-body"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       )}
