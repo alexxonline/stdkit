@@ -16,8 +16,13 @@ export function SignOutButton({ email }: { email: string | null }) {
   }
 
   return (
-    <div className="fixed top-4 right-4 z-40 flex items-center gap-3 rounded-full border border-black/10 bg-white/80 px-3 py-1.5 text-xs shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-900/80">
-      {email && <span className="max-w-[180px] truncate text-zinc-600 dark:text-zinc-400">{email}</span>}
+    <div className="fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-1.5 text-xs shadow-sm backdrop-blur dark:border-white/10 dark:bg-zinc-900/80">
+      {email && (
+        <span className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-500" aria-hidden="true" />
+          <span className="max-w-[220px] truncate">Signed in as <span className="font-medium text-zinc-900 dark:text-zinc-100">{email}</span></span>
+        </span>
+      )}
       <button
         type="button"
         onClick={handleClick}

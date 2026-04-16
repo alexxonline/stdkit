@@ -1,33 +1,120 @@
 {
   "courses": [
     {
-      "id": "intro-to-cs",
-      "year": 2025,
-      "title": "Introduction to Computer Science",
+      "id": "pp3",
+      "year": 2026,
+      "title": "Practica profesional 3",
       "sections": [
-        { "id": "algorithms", "title": "Algorithms" },
-        { "id": "data-structures", "title": "Data Structures" },
-        { "id": "complexity", "title": "Complexity Analysis" }
+        {
+          "id": "clase-1",
+          "title": "Clase 1"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 2"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 3"
+        },
+        {
+          "id": "clase-4",
+          "title": "Clase 4"
+        },
+        {
+          "id": "clase-5",
+          "title": "Clase 5"
+        },
+        {
+          "id": "clase-1",
+          "title": "Clase 6"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 7"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 8"
+        }
       ]
     },
     {
-      "id": "web-development",
-      "year": 2025,
-      "title": "Modern Web Development",
+      "id": "seg",
+      "year": 2026,
+      "title": "Seguridad Informática",
       "sections": [
-        { "id": "html-css", "title": "HTML and CSS" },
-        { "id": "javascript", "title": "JavaScript Fundamentals" },
-        { "id": "react", "title": "React and Next.js" }
+        {
+          "id": "clase-1",
+          "title": "Clase 1"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 2"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 3"
+        },
+        {
+          "id": "clase-4",
+          "title": "Clase 4"
+        },
+        {
+          "id": "clase-5",
+          "title": "Clase 5"
+        },
+        {
+          "id": "clase-1",
+          "title": "Clase 6"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 7"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 8"
+        }
       ]
     },
     {
-      "id": "linear-algebra",
-      "year": 2024,
-      "title": "Linear Algebra",
+      "id": "ma1",
+      "year": 2026,
+      "title": "Matemáticas 1",
       "sections": [
-        { "id": "vectors", "title": "Vectors and Spaces" },
-        { "id": "matrices", "title": "Matrix Operations" },
-        { "id": "eigenvalues", "title": "Eigenvalues and Eigenvectors" }
+        {
+          "id": "clase-1",
+          "title": "Clase 1"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 2"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 3"
+        },
+        {
+          "id": "clase-4",
+          "title": "Clase 4"
+        },
+        {
+          "id": "clase-5",
+          "title": "Clase 5"
+        },
+        {
+          "id": "clase-1",
+          "title": "Clase 6"
+        },
+        {
+          "id": "clase-2",
+          "title": "Clase 7"
+        },
+        {
+          "id": "clase-3",
+          "title": "Clase 8"
+        }
       ]
     }
   ]
