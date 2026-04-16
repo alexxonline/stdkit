@@ -1,0 +1,34 @@
+{
+  "courses": [
+    {
+      "id": "intro-to-cs",
+      "year": 2025,
+      "title": "Introduction to Computer Science",
+      "sections": [
+        { "id": "algorithms", "title": "Algorithms" },
+        { "id": "data-structures", "title": "Data Structures" },
+        { "id": "complexity", "title": "Complexity Analysis" }
+      ]
+    },
+    {
+      "id": "web-development",
+      "year": 2025,
+      "title": "Modern Web Development",
+      "sections": [
+        { "id": "html-css", "title": "HTML and CSS" },
+        { "id": "javascript", "title": "JavaScript Fundamentals" },
+        { "id": "react", "title": "React and Next.js" }
+      ]
+    },
+    {
+      "id": "linear-algebra",
+      "year": 2024,
+      "title": "Linear Algebra",
+      "sections": [
+        { "id": "vectors", "title": "Vectors and Spaces" },
+        { "id": "matrices", "title": "Matrix Operations" },
+        { "id": "eigenvalues", "title": "Eigenvalues and Eigenvectors" }
+      ]
+    }
+  ]
+}
