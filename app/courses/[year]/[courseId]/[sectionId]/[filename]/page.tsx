@@ -4,6 +4,7 @@ import { CoursesRepository } from "@/lib/courses/courses-repository";
 import { ContentRepository } from "@/lib/content/content-repository";
 import { markdownToHtml } from "@/lib/markdown";
 import { deleteContent } from "@/app/actions/content";
+import { AskQuestion } from "./ask-question";
 
 export default async function ContentViewPage({
   params,
@@ -23,9 +24,10 @@ export default async function ContentViewPage({
   const { course, section } = found;
 
   let html = "";
+  let source = "";
   let loadError: string | null = null;
   try {
-    const source = await ContentRepository.default().getContent({
+    source = await ContentRepository.default().getContent({
       year,
       courseId,
       sectionId,
@@ -87,10 +89,13 @@ export default async function ContentViewPage({
           {loadError}
         </p>
       ) : (
-        <article
-          className="markdown-body"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <>
+          <article
+            className="markdown-body"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+          <AskQuestion content={source} />
+        </>
       )}
     </div>
   );
