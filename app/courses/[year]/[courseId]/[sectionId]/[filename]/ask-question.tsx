@@ -9,6 +9,17 @@ export function AskQuestion({ content }: { content: string }) {
   const [answer, setAnswer] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  }
 
   function close() {
     setOpen(false);
@@ -26,7 +37,14 @@ export function AskQuestion({ content }: { content: string }) {
 
   return (
     <>
-      <div className="mt-10 flex justify-end">
+      <div className="mt-10 flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={copy}
+          className="rounded-full border border-black/20 px-4 py-2 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
         <button
           type="button"
           onClick={() => setOpen(true)}

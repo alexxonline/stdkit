@@ -6,6 +6,8 @@ import { markdownToHtml } from "@/lib/markdown";
 import { deleteContent } from "@/app/actions/content";
 import { AskQuestion } from "./ask-question";
 
+const DELETE_ENABLED = false;
+
 export default async function ContentViewPage({
   params,
 }: {
@@ -69,18 +71,20 @@ export default async function ContentViewPage({
           >
             Edit
           </Link>
-          <form action={deleteContent}>
-            <input type="hidden" name="year" value={year} />
-            <input type="hidden" name="courseId" value={courseId} />
-            <input type="hidden" name="sectionId" value={sectionId} />
-            <input type="hidden" name="filename" value={filename} />
-            <button
-              type="submit"
-              className="rounded-full border border-red-600/40 px-4 py-2 text-sm text-red-600 hover:bg-red-600/10"
-            >
-              Delete
-            </button>
-          </form>
+          {DELETE_ENABLED && (
+            <form action={deleteContent}>
+              <input type="hidden" name="year" value={year} />
+              <input type="hidden" name="courseId" value={courseId} />
+              <input type="hidden" name="sectionId" value={sectionId} />
+              <input type="hidden" name="filename" value={filename} />
+              <button
+                type="submit"
+                className="rounded-full border border-red-600/40 px-4 py-2 text-sm text-red-600 hover:bg-red-600/10"
+              >
+                Delete
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
