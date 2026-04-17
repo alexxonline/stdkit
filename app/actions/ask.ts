@@ -1,5 +1,7 @@
 "use server";
 
+import { requireSession } from "@/lib/auth";
+
 export type AskResult =
   | { ok: true; answer: string }
   | { ok: false; error: string };
@@ -8,6 +10,12 @@ export async function askQuestion(
   content: string,
   question: string
 ): Promise<AskResult> {
+  try {
+    await requireSession();
+  } catch {
+    return { ok: false, error: "Unauthorized" };
+  }
+
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) return { ok: false, error: "OPENROUTER_API_KEY is not set." };
 

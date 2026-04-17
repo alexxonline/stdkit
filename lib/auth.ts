@@ -2,9 +2,10 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
 import { MongoClient } from "mongodb";
+import { headers } from "next/headers";
 
 export const isAuthEnabled =
-  (process.env.AUTH_ENABLED ?? "").trim().toLowerCase() === "true";
+  (process.env.AUTH_DISABLED ?? "").trim().toLowerCase() !== "true";
 
 const connectionString = process.env.DB_CONNECTION_STRING;
 const secret = process.env.BETTER_AUTH_SECRET;
@@ -56,3 +57,17 @@ function createAuth() {
 export const auth = createAuth();
 
 export type Auth = NonNullable<typeof auth>;
+
+export async function getCurrentSession() {
+  if (!isAuthEnabled || !auth) return null;
+  return await auth.api.getSession({ headers: await headers() });
+}
+
+export async function requireSession() {
+  if (!isAuthEnabled || !auth) {
+    throw new Error("Authentication is required but not configured.");
+  }
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Unauthorized");
+  return session;
+}

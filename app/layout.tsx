@@ -1,10 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import "./globals.css";
 import { auth, isAuthEnabled } from "@/lib/auth";
 import { SignOutButton } from "./sign-out-button";
 import { PWARegister } from "./pwa-register";
+
+function isPublicPath(pathname: string | null): boolean {
+  if (!pathname) return false;
+  return (
+    pathname === "/login" ||
+    pathname.startsWith("/api/auth") ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js"
+  );
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,7 +62,12 @@ export default async function RootLayout({
 }>) {
   let sessionEmail: string | null = null;
   if (isAuthEnabled && auth) {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const h = await headers();
+    const session = await auth.api.getSession({ headers: h });
+    const pathname = h.get("x-pathname");
+    if (!session && !isPublicPath(pathname)) {
+      redirect("/login");
+    }
     sessionEmail = session?.user?.email ?? null;
   }
 

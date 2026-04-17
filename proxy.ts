@@ -1,18 +1,29 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const authEnabled =
-  (process.env.AUTH_ENABLED ?? "").trim().toLowerCase() === "true";
+const authDisabled =
+  (process.env.AUTH_DISABLED ?? "").trim().toLowerCase() === "true";
 
 const SESSION_COOKIE = "better-auth.session_token";
 
-export function proxy(request: NextRequest) {
-  if (!authEnabled) return NextResponse.next();
+function isPublicPath(pathname: string): boolean {
+  return (
+    pathname === "/login" ||
+    pathname.startsWith("/api/auth") ||
+    pathname === "/manifest.webmanifest" ||
+    pathname === "/sw.js"
+  );
+}
 
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname === "/login" || pathname.startsWith("/api/auth")) {
-    return NextResponse.next();
-  }
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  const passthrough = NextResponse.next({ request: { headers: requestHeaders } });
+
+  if (authDisabled) return passthrough;
+  if (isPublicPath(pathname)) return passthrough;
 
   const hasSession =
     request.cookies.has(SESSION_COOKIE) ||
@@ -25,7 +36,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next();
+  return passthrough;
 }
 
 export const config = {

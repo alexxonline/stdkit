@@ -5,14 +5,21 @@ import { redirect } from "next/navigation";
 import { CoursesRepository } from "@/lib/courses/courses-repository";
 import { ContentRepository } from "@/lib/content/content-repository";
 import { convertPdfToMarkdown } from "@/lib/content/mistral-ocr";
+import { requireSession } from "@/lib/auth";
 
-function sanitizeFilename(raw: string): string {
+function sanitizeFilename(raw: string, { appendMd = true } = {}): string {
   const trimmed = raw.trim();
   if (!trimmed) throw new Error("Filename is required.");
   if (trimmed.includes("/") || trimmed.includes("\\"))
     throw new Error("Filename cannot contain slashes.");
   if (trimmed.startsWith("."))
     throw new Error("Filename cannot start with a dot.");
+  if (trimmed.includes(".."))
+    throw new Error("Filename cannot contain '..'.");
+  // eslint-disable-next-line no-control-regex
+  if (/[\x00-\x1f\x7f]/.test(trimmed))
+    throw new Error("Filename contains invalid characters.");
+  if (!appendMd) return trimmed;
   return trimmed.endsWith(".md") ? trimmed : `${trimmed}.md`;
 }
 
@@ -28,6 +35,8 @@ async function ensureSectionExists(
 }
 
 export async function createContent(formData: FormData): Promise<void> {
+  await requireSession();
+
   const year = String(formData.get("year") ?? "");
   const courseId = String(formData.get("courseId") ?? "");
   const sectionId = String(formData.get("sectionId") ?? "");
@@ -47,13 +56,16 @@ export async function createContent(formData: FormData): Promise<void> {
 }
 
 export async function updateContent(formData: FormData): Promise<void> {
+  await requireSession();
+
   const year = String(formData.get("year") ?? "");
   const courseId = String(formData.get("courseId") ?? "");
   const sectionId = String(formData.get("sectionId") ?? "");
-  const filename = String(formData.get("filename") ?? "");
+  const filename = sanitizeFilename(String(formData.get("filename") ?? ""), {
+    appendMd: false,
+  });
   const body = String(formData.get("body") ?? "");
 
-  if (!filename) throw new Error("Filename is required.");
   await ensureSectionExists(year, courseId, sectionId);
   await ContentRepository.default().saveContent(
     { year, courseId, sectionId, filename },
@@ -67,6 +79,8 @@ export async function updateContent(formData: FormData): Promise<void> {
 }
 
 export async function uploadPdfContent(formData: FormData): Promise<void> {
+  await requireSession();
+
   const year = String(formData.get("year") ?? "");
   const courseId = String(formData.get("courseId") ?? "");
   const sectionId = String(formData.get("sectionId") ?? "");
@@ -97,12 +111,15 @@ export async function uploadPdfContent(formData: FormData): Promise<void> {
 }
 
 export async function deleteContent(formData: FormData): Promise<void> {
+  await requireSession();
+
   const year = String(formData.get("year") ?? "");
   const courseId = String(formData.get("courseId") ?? "");
   const sectionId = String(formData.get("sectionId") ?? "");
-  const filename = String(formData.get("filename") ?? "");
+  const filename = sanitizeFilename(String(formData.get("filename") ?? ""), {
+    appendMd: false,
+  });
 
-  if (!filename) throw new Error("Filename is required.");
   await ensureSectionExists(year, courseId, sectionId);
   await ContentRepository.default().deleteContent({
     year,
