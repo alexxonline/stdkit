@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Study Kit
 
-## Getting Started
+Organize courses, sections, and study notes. Notes are written and stored as
+markdown in Cloudflare R2. Upload a PDF and it gets converted to markdown via
+Mistral OCR; ask questions about a note via OpenRouter.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router) + React 19
+- Tailwind CSS v4
+- Better Auth (Google OAuth) with MongoDB adapter
+- Cloudflare R2 for markdown storage (via `@aws-sdk/client-s3`)
+- Mistral OCR for PDF → markdown
+- OpenRouter for ask-a-question
+- Vitest for tests
+- PWA (manifest + service worker)
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` — start the dev server
+- `npm run build` — production build
+- `npm run start` — run the production build
+- `npm run lint` — ESLint
+- `npm test` — run tests once
+- `npm run test:watch` — watch mode
 
-## Learn More
+## Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+Required:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `DB_CONNECTION_STRING` — MongoDB connection string (auth storage)
+- `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
+- `GOOGLE_AUTH_CLIENT_ID`, `GOOGLE_AUTH_CLIENT_SECRET`
+- `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`
+- `MISTRAL_API_KEY` — for PDF → markdown
+- `OPENROUTER_API_KEY` — for ask-a-question
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Optional:
 
-## Deploy on Vercel
+- `R2_ENDPOINT` — override the default R2 endpoint
+- `AUTH_DISABLED=true` — bypass auth locally
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project layout
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` — routes, server actions, PWA registration, service worker
+- `app/courses/[year]/[courseId]/[sectionId]/[filename]/` — note view/edit
+- `lib/courses/` — course metadata repository (backed by `data/courses.json`)
+- `lib/content/` — R2 client, content repository, Mistral OCR
+- `lib/auth.ts` — Better Auth setup
+- `proxy.ts` — auth redirect for non-public paths
+- `data/courses.json` — course/section definitions
