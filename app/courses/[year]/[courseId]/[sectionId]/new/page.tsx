@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CoursesRepository } from "@/lib/courses/courses-repository";
-import { createContent } from "@/app/actions/content";
+import { createContent, uploadPdfContent } from "@/app/actions/content";
 
 export default async function NewContentPage({
   params,
@@ -35,6 +35,43 @@ export default async function NewContentPage({
         </Link>
       </nav>
       <h1 className="mb-8 text-3xl font-semibold tracking-tight">New content</h1>
+
+      <form
+        action={uploadPdfContent}
+        className="mb-10 flex flex-col gap-3 rounded-md border border-black/10 p-4 dark:border-white/10"
+      >
+        <input type="hidden" name="year" value={year} />
+        <input type="hidden" name="courseId" value={courseId} />
+        <input type="hidden" name="sectionId" value={sectionId} />
+
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">Upload a PDF</span>
+          <span className="text-xs text-zinc-500">
+            Mistral OCR converts it to markdown and saves it here.
+          </span>
+        </div>
+
+        <input
+          type="file"
+          name="pdf"
+          accept="application/pdf"
+          required
+          className="text-sm"
+        />
+
+        <div>
+          <button
+            type="submit"
+            className="rounded-full bg-foreground px-5 py-2 text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
+          >
+            Upload PDF
+          </button>
+        </div>
+      </form>
+
+      <div className="mb-4 text-sm uppercase tracking-wider text-zinc-500">
+        Or write markdown directly
+      </div>
 
       <form action={createContent} className="flex flex-col gap-4">
         <input type="hidden" name="year" value={year} />

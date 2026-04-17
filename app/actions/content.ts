@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { CoursesRepository } from "@/lib/courses/courses-repository";
 import { ContentRepository } from "@/lib/content/content-repository";
+import { convertPdfToMarkdown } from "@/lib/content/mistral-ocr";
 
 function sanitizeFilename(raw: string): string {
   const trimmed = raw.trim();
@@ -60,6 +61,36 @@ export async function updateContent(formData: FormData): Promise<void> {
   );
 
   revalidatePath(`/courses/${year}/${courseId}/${sectionId}/${filename}`);
+  redirect(
+    `/courses/${year}/${courseId}/${sectionId}/${encodeURIComponent(filename)}`
+  );
+}
+
+export async function uploadPdfContent(formData: FormData): Promise<void> {
+  const year = String(formData.get("year") ?? "");
+  const courseId = String(formData.get("courseId") ?? "");
+  const sectionId = String(formData.get("sectionId") ?? "");
+  const pdf = formData.get("pdf");
+
+  if (!(pdf instanceof File) || pdf.size === 0) {
+    throw new Error("PDF file is required.");
+  }
+  if (pdf.type && pdf.type !== "application/pdf") {
+    throw new Error("File must be a PDF.");
+  }
+
+  await ensureSectionExists(year, courseId, sectionId);
+
+  const markdown = await convertPdfToMarkdown(pdf);
+  const base = pdf.name.replace(/\.pdf$/i, "") || "document";
+  const filename = sanitizeFilename(base);
+
+  await ContentRepository.default().saveContent(
+    { year, courseId, sectionId, filename },
+    markdown
+  );
+
+  revalidatePath(`/courses/${year}/${courseId}/${sectionId}`);
   redirect(
     `/courses/${year}/${courseId}/${sectionId}/${encodeURIComponent(filename)}`
   );
