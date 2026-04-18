@@ -5,6 +5,7 @@ import { ContentRepository } from "@/lib/content/content-repository";
 import { markdownToHtml } from "@/lib/markdown";
 import { deleteContent } from "@/app/actions/content";
 import { AskQuestion } from "./ask-question";
+import { StoryMode } from "./story-mode";
 
 const DELETE_ENABLED = false;
 
@@ -98,7 +99,16 @@ export default async function ContentViewPage({
             className="markdown-body"
             dangerouslySetInnerHTML={{ __html: html }}
           />
-          <AskQuestion content={source} />
+          <div className="mt-10 flex flex-wrap justify-end gap-2">
+            <AskQuestion content={source} />
+            <StoryMode
+              year={year}
+              courseId={courseId}
+              sectionId={sectionId}
+              filename={filename}
+              content={source}
+            />
+          </div>
         </>
       )}
     </div>

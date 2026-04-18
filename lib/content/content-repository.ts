@@ -8,6 +8,15 @@ export type ContentRef = {
   filename: string;
 };
 
+export type StorySlide = {
+  title?: string;
+  text: string;
+};
+
+export type Story = {
+  slides: StorySlide[];
+};
+
 export class ContentRepository {
   constructor(private readonly client: ContentClient) {}
 
@@ -19,6 +28,10 @@ export class ContentRepository {
     return `${ref.year}/${ref.courseId}/${ref.sectionId}/${ref.filename}`;
   }
 
+  static buildStoryKey(ref: ContentRef): string {
+    return `${ContentRepository.buildKey(ref)}.story.json`;
+  }
+
   async listFilenames(
     year: number | string,
     courseId: string,
@@ -28,7 +41,7 @@ export class ContentRepository {
     const keys = await this.client.list(prefix);
     return keys
       .map((k) => k.slice(prefix.length))
-      .filter((name) => name.length > 0);
+      .filter((name) => name.length > 0 && name.endsWith(".md"));
   }
 
   async getContent(ref: ContentRef): Promise<string> {
@@ -41,6 +54,29 @@ export class ContentRepository {
 
   async deleteContent(ref: ContentRef): Promise<void> {
     await this.client.delete(ContentRepository.buildKey(ref));
+  }
+
+  async getStory(ref: ContentRef): Promise<Story | null> {
+    let raw: string;
+    try {
+      raw = await this.client.get(ContentRepository.buildStoryKey(ref));
+    } catch {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(raw) as { slides?: unknown };
+      if (!parsed || !Array.isArray(parsed.slides)) return null;
+      return parsed as Story;
+    } catch {
+      return null;
+    }
+  }
+
+  async saveStory(ref: ContentRef, story: Story): Promise<void> {
+    await this.client.put(
+      ContentRepository.buildStoryKey(ref),
+      JSON.stringify(story)
+    );
   }
 
   static default(): ContentRepository {

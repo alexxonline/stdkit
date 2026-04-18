@@ -37,22 +37,20 @@ export function AskQuestion({ content }: { content: string }) {
 
   return (
     <>
-      <div className="mt-10 flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={copy}
-          className="rounded-full border border-black/20 px-4 py-2 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
-        >
-          {copied ? "Copied" : "Copy"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="rounded-full border border-black/20 px-4 py-2 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
-        >
-          Ask a question
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={copy}
+        className="rounded-full border border-black/20 px-4 py-2 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+      >
+        {copied ? "Copied" : "Copy"}
+      </button>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="rounded-full border border-black/20 px-4 py-2 text-sm hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+      >
+        Ask a question
+      </button>
 
       {open && (
         <div
