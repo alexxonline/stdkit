@@ -6,6 +6,7 @@ import { markdownToHtml } from "@/lib/markdown";
 import { deleteContent } from "@/app/actions/content";
 import { AskQuestion } from "./ask-question";
 import { StoryMode } from "./story-mode";
+import { QuizMode } from "./quiz-mode";
 
 const DELETE_ENABLED = false;
 
@@ -102,6 +103,13 @@ export default async function ContentViewPage({
           <div className="mt-10 flex flex-wrap justify-end gap-2">
             <AskQuestion content={source} />
             <StoryMode
+              year={year}
+              courseId={courseId}
+              sectionId={sectionId}
+              filename={filename}
+              content={source}
+            />
+            <QuizMode
               year={year}
               courseId={courseId}
               sectionId={sectionId}

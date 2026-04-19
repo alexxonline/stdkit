@@ -71,6 +71,64 @@ describe("ContentRepository", () => {
     expect(client.store.get("2025/intro/algo/lesson.md")).toBe("# hello");
   });
 
+  it("builds quiz cache keys alongside content keys", () => {
+    expect(
+      ContentRepository.buildQuizKey({
+        year: 2025,
+        courseId: "intro",
+        sectionId: "algo",
+        filename: "lesson.md",
+      })
+    ).toBe("2025/intro/algo/lesson.md.quiz.json");
+  });
+
+  it("saves and reads quiz cache", async () => {
+    const client = new FakeContentClient();
+    const repo = new ContentRepository(client);
+    const ref = {
+      year: 2025,
+      courseId: "intro",
+      sectionId: "algo",
+      filename: "lesson.md",
+    };
+    const quiz = {
+      questions: [
+        {
+          question: "What is 2+2?",
+          choices: ["3", "4", "5", "6"],
+          correctIndex: 1,
+        },
+      ],
+    };
+    await repo.saveQuiz(ref, quiz);
+    expect(await repo.getQuiz(ref)).toEqual(quiz);
+  });
+
+  it("returns null when quiz cache is missing", async () => {
+    const client = new FakeContentClient();
+    const repo = new ContentRepository(client);
+    const quiz = await repo.getQuiz({
+      year: 2025,
+      courseId: "intro",
+      sectionId: "algo",
+      filename: "lesson.md",
+    });
+    expect(quiz).toBeNull();
+  });
+
+  it("returns null when quiz cache is malformed", async () => {
+    const client = new FakeContentClient();
+    client.store.set("2025/intro/algo/lesson.md.quiz.json", "{not json");
+    const repo = new ContentRepository(client);
+    const quiz = await repo.getQuiz({
+      year: 2025,
+      courseId: "intro",
+      sectionId: "algo",
+      filename: "lesson.md",
+    });
+    expect(quiz).toBeNull();
+  });
+
   it("deletes content by key", async () => {
     const client = new FakeContentClient();
     client.store.set("2025/intro/algo/lesson.md", "x");

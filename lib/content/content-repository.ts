@@ -17,6 +17,17 @@ export type Story = {
   slides: StorySlide[];
 };
 
+export type QuizQuestion = {
+  question: string;
+  choices: string[];
+  correctIndex: number;
+  explanation?: string;
+};
+
+export type Quiz = {
+  questions: QuizQuestion[];
+};
+
 export class ContentRepository {
   constructor(private readonly client: ContentClient) {}
 
@@ -30,6 +41,10 @@ export class ContentRepository {
 
   static buildStoryKey(ref: ContentRef): string {
     return `${ContentRepository.buildKey(ref)}.story.json`;
+  }
+
+  static buildQuizKey(ref: ContentRef): string {
+    return `${ContentRepository.buildKey(ref)}.quiz.json`;
   }
 
   async listFilenames(
@@ -76,6 +91,29 @@ export class ContentRepository {
     await this.client.put(
       ContentRepository.buildStoryKey(ref),
       JSON.stringify(story)
+    );
+  }
+
+  async getQuiz(ref: ContentRef): Promise<Quiz | null> {
+    let raw: string;
+    try {
+      raw = await this.client.get(ContentRepository.buildQuizKey(ref));
+    } catch {
+      return null;
+    }
+    try {
+      const parsed = JSON.parse(raw) as { questions?: unknown };
+      if (!parsed || !Array.isArray(parsed.questions)) return null;
+      return parsed as Quiz;
+    } catch {
+      return null;
+    }
+  }
+
+  async saveQuiz(ref: ContentRef, quiz: Quiz): Promise<void> {
+    await this.client.put(
+      ContentRepository.buildQuizKey(ref),
+      JSON.stringify(quiz)
     );
   }
 
