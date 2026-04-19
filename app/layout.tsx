@@ -36,13 +36,6 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Study Kit",
   },
-  icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "48x48" },
-    ],
-    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
-  },
 };
 
 export const viewport: Viewport = {
